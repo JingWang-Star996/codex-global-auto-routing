@@ -1,0 +1,25 @@
+name: Offline tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Python gate tests
+        run: python tests\test_upward_assist.py
+      - name: R10 policy tests
+        shell: powershell
+        run: |
+          .\tests\Test-RouterPolicyR10.ps1
+          .\tests\Test-R10AuthorizationTiming.ps1
+          .\tests\Test-BilingualParity.ps1

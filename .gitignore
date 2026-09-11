@@ -1,0 +1,36 @@
+# Local deployment and private evidence. Examples and tests are source.
+/AGENTS.md
+/config.toml
+/hooks.json
+/state/
+/DEPLOYMENT.md
+/VALIDATION.md
+/governance/
+/backups/
+/sessions/
+/logs/
+/artifacts/
+/test-output/
+/qa/
+/tests/.release-test-output/
+__pycache__/
+*.py[cod]
+*.bak
+*.backup
+*.tmp
+*.temp
+*.log
+*.session
+*.jsonl
+
+# Credentials and environment files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+auth.json

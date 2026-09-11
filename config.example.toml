@@ -1,0 +1,6 @@
+# 仅保留本项目所需的 Agent 并发设置；模型、提供方、路径和身份由部署者自行配置。
+# Only project-level agent concurrency is shown; configure models, providers, paths, and identity for your own deployment.
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 4
+interrupt_message = true
