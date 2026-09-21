@@ -2,6 +2,13 @@
 
 [中文](CHANGELOG.md) | [English](CHANGELOG.en.md)
 
+## Retired-provider cleanup · 2026-09-21
+
+- Removed the retired concrete model binding from the active Hook source.
+- Automatic Spark compatibility aliases still route deterministically to Terra; pinned requests now report that the provider is retired.
+- Historical quota errors no longer update circuit state and cannot reopen routing, probes, or recovery.
+- Preserved compatibility with the existing state shape; Hook output still does not prove host-level enforcement.
+
 ## R10 publication package · 2026-09-11
 
 - Added one controlled, read-only Sol-root-to-Astra assist. It is off by default and requires specific user approval for the current root task.

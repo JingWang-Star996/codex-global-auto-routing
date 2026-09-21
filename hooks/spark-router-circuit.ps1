@@ -14,7 +14,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$script:SparkModel = 'gpt-5.3-codex-spark'
+$script:SparkProviderRetired = $true
 $script:SparkRoles = @('spark_explorer', 'spark_patch_worker')
 $script:RouterV4HostCanaryAgentType = 'router_v4_host_canary'
 $script:AutomaticSparkProviderProbeEnabled = $false
@@ -198,7 +198,7 @@ function Test-StateInvariant {
         'probe_started_at', 'probe_lease_until'
     )
     foreach ($name in $required) { if (-not (Test-HasProperty $State $name)) { return $false } }
-    if ([int]$State.schema_version -ne 4 -or [string]$State.model -ne $script:SparkModel) { return $false }
+    if ([int]$State.schema_version -ne 4 -or $State.model -isnot [string] -or [string]::IsNullOrWhiteSpace([string]$State.model)) { return $false }
     if ([string]$State.circuit_state -notin @('closed', 'open', 'half_open')) { return $false }
     if ([int64]$State.generation -lt 0 -or [int64]$State.failure_count -lt 0) { return $false }
     if ([string]::IsNullOrWhiteSpace([string]$State.last_source)) { return $false }
@@ -369,12 +369,14 @@ function Get-NextProbeAt {
 
 function Get-QuotaError {
     param([object]$Container)
+    # The former provider is retired. Historical quota observations must not
+    # reopen a route or a probe path from stale responses or transcripts.
+    if ($script:SparkProviderRetired) { return $null }
     if ($null -eq $Container -or -not (Test-HasProperty $Container 'error')) { return $null }
     $errorObject = $Container.error
     if ($null -eq $errorObject -or -not (Test-HasProperty $errorObject 'codex_error_info') -or -not (Test-HasProperty $errorObject 'message')) { return $null }
     if ([string]$errorObject.codex_error_info -cne 'usage_limit_exceeded') { return $null }
     $message = [string]$errorObject.message
-    if ($message.IndexOf('GPT-5.3-Codex-Spark', [StringComparison]::OrdinalIgnoreCase) -lt 0) { return $null }
     if ($message -notmatch '(?i)\busage limit\b') { return $null }
     return $errorObject
 }
@@ -468,27 +470,28 @@ function Get-PreToolResponse {
     if (-not (Test-SparkRole ([string]$toolInput.agent_type))) { return New-EmptyResponse }
     $policy = Get-FallbackPolicy $toolInput
     if ($policy -eq 'invalid') { return New-DenyResponse 'spark_router_invalid_fallback_policy' }
-    if ($policy -eq 'pinned') { return New-DenyResponse 'spark_router_pinned_provider_probe_disabled' }
+    if ($policy -eq 'pinned') { return New-DenyResponse 'spark_router_retired_provider' }
     # This kill-switch is script-owned: hook input and task prompts cannot enable it.
     if (-not $script:AutomaticSparkProviderProbeEnabled) {
-        return New-FallbackResponse $toolInput 'spark_provider_probe_disabled'
+        return New-FallbackResponse $toolInput 'spark_provider_retired'
     }
     return New-DenyResponse 'spark_router_provider_probe_not_manually_enabled'
 }
 
 function Get-SessionStartResponse {
-    return New-ContextResponse 'SessionStart' 'Spark profile hard kill-switch is active and automatic provider probes are disabled. Route automatic Spark candidates to Terra; deny pinned Spark requests. Hook installation or trust does not prove host enforcement.'
+    return New-ContextResponse 'SessionStart' 'Spark compatibility alias hard kill-switch is active because the former provider is retired. Route automatic Spark candidates to Terra; deny pinned Spark requests. Hook installation or trust does not prove host enforcement.'
 }
 
 function Get-SubagentStartResponse {
     param([object]$Event)
+    if ($script:SparkProviderRetired) { return New-EmptyResponse }
     if (-not $script:AutomaticSparkProviderProbeEnabled) { return New-EmptyResponse }
     if (-not (Test-SparkRole ([string]$Event.agent_type)) -or [string]::IsNullOrWhiteSpace([string]$Event.agent_id)) { return New-EmptyResponse }
     try {
         return Invoke-WithStateLock {
             $state = Read-State
             if ([string]$state.circuit_state -ne 'half_open' -or $Now -ge [datetimeoffset]$state.probe_lease_until) { return New-EmptyResponse }
-            if ([string]$Event.model -ne $script:SparkModel -or [string]$Event.session_id -ne [string]$state.probe_session_id -or [string]$Event.turn_id -ne [string]$state.probe_turn_id -or [string]$Event.agent_type -ne [string]$state.probe_agent_type) { return New-EmptyResponse }
+            if ([string]$Event.session_id -ne [string]$state.probe_session_id -or [string]$Event.turn_id -ne [string]$state.probe_turn_id -or [string]$Event.agent_type -ne [string]$state.probe_agent_type) { return New-EmptyResponse }
             if ($null -eq $state.probe_agent_id) {
                 $state.probe_agent_id = [string]$Event.agent_id
                 $state.last_observed_at = $Now.ToString('o')

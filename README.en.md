@@ -19,7 +19,7 @@ An experimental, project-independent configuration package for Codex Desktop / C
 
 The user-selected model remains the coordinator and owns authorization, critical verification, and the final answer. See the [English policy](i18n/en/AGENTS.example.md) for the task packet, failure, handoff, receipt, and usage rules.
 
-Spark remains hard-disabled. The two Spark-named profiles are compatibility aliases mapped to Terra as a fail-safe; they must not be spawned and the Spark provider must not be probed. Automatic candidates go directly to Terra, and pinned Spark requests are denied. A quota reset is not restoration authorization.
+Spark remains hard-disabled. The two Spark-named profiles are compatibility aliases mapped to Terra as a fail-safe; they must not be spawned and the Spark provider must not be probed. Automatic candidates go directly to Terra, and pinned Spark requests are denied. The former provider is retired, and historical quota records cannot reopen routing, probes, or recovery.
 
 ## R10 controlled upward assist
 
@@ -67,6 +67,7 @@ Run from the repository root. These commands need no API key and do not start a 
 ```powershell
 python tests\test_upward_assist.py
 powershell -NoProfile -ExecutionPolicy Bypass -File tests\Test-RouterPolicyR10.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File tests\Test-RetiredProviderRouting.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File tests\Test-R10AuthorizationTiming.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File tests\Test-BilingualParity.ps1
 ```

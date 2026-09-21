@@ -19,7 +19,7 @@
 
 主协调者始终由用户选择，负责授权、关键验收和最终答复。工位职责、任务包字段、失败分类、写入者交接与用量口径见 [完整策略](AGENTS.example.md)。
 
-Spark 持续硬禁用：两个 Spark 名称只是兼容配置，模型保险映射到 Terra，禁止创建这些别名或调用 Spark provider；automatic 候选直接走 Terra，pinned Spark 请求拒绝。额度刷新不构成恢复授权。
+Spark 持续硬禁用：两个 Spark 名称只是兼容配置，模型保险映射到 Terra，禁止创建这些别名或调用 Spark provider；automatic 候选直接走 Terra，pinned Spark 请求拒绝。原 provider 已退役，历史额度记录不能重新开启路由、探针或恢复流程。
 
 ## R10：受控向上求助
 
@@ -68,6 +68,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\Install-CodexRoute
 ```powershell
 python tests\test_upward_assist.py
 powershell -NoProfile -ExecutionPolicy Bypass -File tests\Test-RouterPolicyR10.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File tests\Test-RetiredProviderRouting.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File tests\Test-R10AuthorizationTiming.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File tests\Test-BilingualParity.ps1
 ```

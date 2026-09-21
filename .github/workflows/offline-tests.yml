@@ -21,5 +21,6 @@ jobs:
         shell: powershell
         run: |
           .\tests\Test-RouterPolicyR10.ps1
+          .\tests\Test-RetiredProviderRouting.ps1
           .\tests\Test-R10AuthorizationTiming.ps1
           .\tests\Test-BilingualParity.ps1
