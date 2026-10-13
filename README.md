@@ -1,4 +1,4 @@
-# Codex 全局多模型路由 · R10
+# Codex 全局多模型路由 · R11
 
 [中文](README.md) | [English](README.en.md)
 
@@ -8,18 +8,24 @@
 
 ## 这套规则做什么
 
-| 工作类型 | 处理方式 |
+| 工作类型 | 工位与默认模型 |
 | --- | --- |
-| 计算、精确读回、范围清楚的小改动 | 主协调者优先用确定性工具直接完成 |
-| 大量同构分类、抽取、去重 | `luna_batch_worker` |
-| 跨文件语义追踪、代码与日志盘点 | `terra_explorer` |
-| 常规多文件实现、调试、测试 | `terra_worker` |
-| 安全、生产配置、并发等独立复核 | `sol_specialist` |
-| Sol 根任务满足条件并获得具体授权后的单次只读求助 | `astra_specialist` |
+| 可解析的计算、字段比较、精确读回 | 主协调者优先用确定性工具 |
+| 常规读取、检索、跨文件盘点 | `luna_explorer` · GPT-6 Luna / low |
+| 同构分类、抽取、去重 | `luna_batch_worker` · GPT-6 Luna / low |
+| 范围清楚的可逆执行、小修、命令和测试 | `luna_worker` · GPT-6 Luna / medium |
+| 深入语义判断、复杂实现与调试 | `terra_explorer` / `terra_worker` · GPT-6.1 Sol / medium |
+| 高风险独立只读复核 | `sol_specialist` · GPT-6.1 Sol / high |
+| 满足原 R10 根模型门槛且有具体授权的单次只读求助 | `astra_specialist` · GPT-6 Astra / high |
 
 主协调者始终由用户选择，负责授权、关键验收和最终答复。工位职责、任务包字段、失败分类、写入者交接与用量口径见 [完整策略](AGENTS.example.md)。
 
 Spark 持续硬禁用：两个 Spark 名称只是兼容配置，模型保险映射到 Terra，禁止创建这些别名或调用 Spark provider；automatic 候选直接走 Terra，pinned Spark 请求拒绝。原 provider 已退役，历史额度记录不能重新开启路由、探针或恢复流程。
+
+
+默认子模型改为 GPT-6 Luna / low；主模型由用户选择。新角色必须先实际注册，固定角色的 model/effort 覆盖可能被忽略。记录请求、注册、配置与实际模型，首次以只读任务核对 child `turn_context`；不匹配就交回协调者。可解析字段与汇总布尔值由脚本重新判定。[R11 验收边界](docs/model-routing-r11.md)。
+
+随附可安装的 [证据驱动 Agent 工作流 Skill](skills/design-evidence-led-agent-workflow/SKILL.md)，包含模型运行核验脚本和正反例测试。R11 不扩大原 R10 Astra 根模型资格。
 
 ## R10：受控向上求助
 
@@ -77,6 +83,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tests\Test-BilingualParity.p
 
 ## 发布与许可
 
-本次整理的是 R10 可移植配置和离线测试；本机源仓库及已部署配置不随发布修改。历史版本变化见 [中文](CHANGELOG.md) / [English](CHANGELOG.en.md)。
+本次更新的是 R11 任务路由、Skill 与离线测试；本机源仓库及已部署配置不随发布修改。历史版本变化见 [中文](CHANGELOG.md) / [English](CHANGELOG.en.md)。
 
 仓库公开可读，可依 GitHub 服务条款查看和 fork，但没有添加开源许可证，也不另行授予修改或再分发许可。不要提交生产状态、会话、授权引用、账户凭据或本机部署记录；忽略规则不能清除已有 Git 历史。

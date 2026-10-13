@@ -13,6 +13,7 @@
 /test-output/
 /qa/
 /tests/.release-test-output/
+.release-test-output/
 __pycache__/
 *.py[cod]
 *.bak

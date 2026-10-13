@@ -15,8 +15,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Python gate tests
-        run: python tests\test_upward_assist.py
+      - name: Python gate and public package tests
+        run: python -B -m unittest discover -s tests
+      - name: Workflow Skill tests
+        run: python -B -m unittest discover -s skills/design-evidence-led-agent-workflow/tests
       - name: R10 policy tests
         shell: powershell
         run: |

@@ -1,4 +1,4 @@
-# Codex Global Multi-Model Routing · R10
+# Codex Global Multi-Model Routing · R11
 
 [中文](README.md) | [English](README.en.md)
 
@@ -8,18 +8,24 @@ An experimental, project-independent configuration package for Codex Desktop / C
 
 ## What it routes
 
-| Work type | Route |
+| Work type | Role and default model |
 | --- | --- |
-| Computation, precise readback, and clear low-risk edits | The coordinator uses deterministic tools directly when practical |
-| Large homogeneous classification, extraction, or deduplication | `luna_batch_worker` |
-| Cross-file semantic tracing and code/log inventory | `terra_explorer` |
-| Routine multi-file implementation, debugging, and tests | `terra_worker` |
-| Independent review of security, production configuration, or concurrency | `sol_specialist` |
-| One controlled read-only assist from a Sol root after task-specific approval | `astra_specialist` |
+| Parseable calculations, field comparisons, and exact readback | Deterministic tools first |
+| Routine reading, retrieval, and cross-file inventory | `luna_explorer` · GPT-6 Luna / low |
+| Homogeneous classification, extraction, and deduplication | `luna_batch_worker` · GPT-6 Luna / low |
+| Bounded reversible execution, small edits, commands, and tests | `luna_worker` · GPT-6 Luna / medium |
+| Deep semantic analysis, complex implementation, and debugging | `terra_explorer` / `terra_worker` · GPT-6.1 Sol / medium |
+| Independent high-risk read-only review | `sol_specialist` · GPT-6.1 Sol / high |
+| One specifically authorized assist within the original R10 root gate | `astra_specialist` · GPT-6 Astra / high |
 
 The user-selected model remains the coordinator and owns authorization, critical verification, and the final answer. See the [English policy](i18n/en/AGENTS.example.md) for the task packet, failure, handoff, receipt, and usage rules.
 
 Spark remains hard-disabled. The two Spark-named profiles are compatibility aliases mapped to Terra as a fail-safe; they must not be spawned and the Spark provider must not be probed. Automatic candidates go directly to Terra, and pinned Spark requests are denied. The former provider is retired, and historical quota records cannot reopen routing, probes, or recovery.
+
+
+The default child model is GPT-6 Luna / low; the user still chooses the root. New roles must actually be registered. Fixed roles may ignore model/effort overrides: separate request, registration, configuration, and actual child `turn_context`; begin with a read-only check and return mismatches to the coordinator. Recompute parseable fields and summary booleans with scripts. See [R11 acceptance boundaries](docs/model-routing-r11.en.md).
+
+The bundled [evidence-led workflow Skill](skills/design-evidence-led-agent-workflow/SKILL.md) includes a runtime route checker and positive/negative tests. R11 does not expand the original R10 Astra root eligibility gate.
 
 ## R10 controlled upward assist
 

@@ -8,7 +8,7 @@ function Check { param([bool]$Ok,[string]$Name); if(-not $Ok){throw "FAIL $Name"
 foreach($fragment in @('全局模型路由 R10','不因“超过 10 秒”','每次必须精确设置','同模型也不例外','fork_turns="none"','delegation_reason','independence_required','实名与身份验证','购买','验证码','不可逆迁移','禁止 Spark provider 调用','half_open','pinned Spark 请求拒绝','可信生命周期持久化','人工审阅','configured_sandbox','turn_context','writer_epoch','中断 30 秒','原因明确','重验一次','cached 是 input 子项','不等于账单费用','默认关闭','gpt-5.6-sol','不是宿主','一个根任务仅一次机会','provider_attempt_observed','180 秒','不 follow-up','8000 字符','3000 字符')){
  Check ($policy.Contains($fragment)) ('invariant '+$fragment)
 }
-foreach($name in @('terra-explorer','terra-worker','sol-specialist','luna-batch-worker')){
+foreach($name in @('terra-explorer','terra-worker','sol-specialist','luna-batch-worker','luna-explorer','luna-worker')){
  $p=Get-Content -LiteralPath (Join-Path $root ('agents\'+$name+'.toml')) -Raw -Encoding UTF8
  foreach($key in @('model','model_reasoning_effort','sandbox_mode','developer_instructions')){
   Check ($p -match ('(?m)^'+$key+' = ')) ($name+' has portable '+$key)

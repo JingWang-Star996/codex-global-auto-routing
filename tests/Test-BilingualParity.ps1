@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
@@ -9,7 +9,7 @@ $count=0
 function Check([bool]$ok,[string]$name){if(-not $ok){throw "FAILED: $name"};$script:count++}
 Check (Test-Path -LiteralPath (Join-Path $en 'AGENTS.example.md') -PathType Leaf) 'English policy exists'
 Check (Test-Path -LiteralPath (Join-Path $en 'docs\upward-assist-r10.md') -PathType Leaf) 'English R10 document exists'
-$roles=@('astra-specialist','luna-batch-worker','sol-specialist','spark-explorer','spark-patch-worker','terra-explorer','terra-worker')
+$roles=@('astra-specialist','luna-batch-worker','luna-explorer','luna-worker','sol-specialist','spark-explorer','spark-patch-worker','terra-explorer','terra-worker')
 foreach($role in $roles){
  $zhPath=Join-Path $root ('agents\'+$role+'.toml');$enPath=Join-Path $en ('agents\'+$role+'.toml')
  Check (Test-Path -LiteralPath $enPath -PathType Leaf) ($role+' English profile exists')

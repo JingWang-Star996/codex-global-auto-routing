@@ -2,6 +2,13 @@
 
 [中文](CHANGELOG.md) | [English](CHANGELOG.en.md)
 
+## R11 task routing and Skill · 2026-10-13
+
+- Default routine reading and reversible execution to GPT-6 Luna; use GPT-6.1 Sol for complex analysis/implementation and expert review. Add two Luna roles and English mirrors.
+- Separate request, registration, configuration, and actual runtime evidence; stop mismatches rather than impersonating new models with overrides.
+- Bundle the evidence-led workflow Skill, a real-transcript route checker, and positive/negative regressions; deterministic scripts validate fields and booleans.
+- Preserve the Spark hard stop, Hook diagnostic boundary, and original R10 Astra authorization eligibility; publish no private transcripts or production state.
+
 ## Retired-provider cleanup · 2026-09-21
 
 - Removed the retired concrete model binding from the active Hook source.

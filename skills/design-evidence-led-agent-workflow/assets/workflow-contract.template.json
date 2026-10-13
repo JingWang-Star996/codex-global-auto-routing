@@ -1,0 +1,212 @@
+{
+  "format": "workflow-contract",
+  "schema_version": "1.0.0",
+  "contract": {
+    "id": "example-workflow",
+    "revision": 1,
+    "title": "示例工作流",
+    "objective": {
+      "statement": "生成并验证一个本地工件",
+      "in_scope": [
+        "artifact"
+      ],
+      "out_of_scope": [
+        "external_release"
+      ]
+    },
+    "control_model": {
+      "selected": "loop",
+      "reason": "围绕一个主要工件反复生成、检查和修正",
+      "signals": {
+        "requires_iteration": true,
+        "fixed_sequence": false,
+        "dynamic_branching": false,
+        "durable_state": false,
+        "permission_handoffs": false,
+        "partial_recovery": false
+      }
+    },
+    "success": {
+      "targets": [
+        {
+          "object_ref": "primary-artifact",
+          "required_claims": [
+            "artifact_created",
+            "artifact_validated"
+          ]
+        }
+      ],
+      "forbidden_claims": [
+        "public_access_verified"
+      ],
+      "terminal_gate_refs": [
+        "quality-gate"
+      ],
+      "allow_partial": false,
+      "completion_authority_ref": "coordinator"
+    },
+    "actors": [
+      {
+        "id": "coordinator",
+        "kind": "agent",
+        "roles": [
+          "coordinator",
+          "completion_writer"
+        ]
+      },
+      {
+        "id": "owner",
+        "kind": "human",
+        "roles": [
+          "approval_authority"
+        ]
+      }
+    ],
+    "objects": [
+      {
+        "id": "primary-artifact",
+        "kind": "artifact",
+        "sensitivity": "internal",
+        "write_policy": "single_writer",
+        "digest_required": "sha256"
+      }
+    ],
+    "steps": [
+      {
+        "id": "build-artifact",
+        "executor_ref": "coordinator",
+        "kind": "agent",
+        "depends_on": [],
+        "allowed_reads": [],
+        "allowed_writes": [
+          "primary-artifact"
+        ],
+        "outputs": [
+          "primary-artifact"
+        ],
+        "entry_gate_refs": [],
+        "exit_gate_refs": [
+          "quality-gate"
+        ],
+        "emits_claims": [
+          "artifact_created",
+          "artifact_validated"
+        ],
+        "side_effect": {
+          "action_class": "local_write",
+          "scope": "local",
+          "reversibility": "reversible",
+          "idempotency": "keyed",
+          "idempotency_key_ref": "primary-artifact"
+        },
+        "recovery_ref": "rebuild-artifact"
+      }
+    ],
+    "gates": [
+      {
+        "id": "quality-gate",
+        "kind": "quality",
+        "evaluator": "machine",
+        "requires": {
+          "claim_types": [
+            "artifact_created"
+          ],
+          "evidence_rules": [
+            {
+              "kind": "validator_result",
+              "subject_ref": "primary-artifact",
+              "result": "pass",
+              "min_count": 1
+            }
+          ],
+          "approval_rule_refs": [],
+          "gate_refs": []
+        },
+        "on_fail": {
+          "failure_level": "F2",
+          "action": "stop_branch"
+        }
+      }
+    ],
+    "permissions": {
+      "default": "deny",
+      "rules": []
+    },
+    "recovery_plans": [
+      {
+        "id": "rebuild-artifact",
+        "recovery_owner_ref": "coordinator",
+        "checkpoint_before_ref": null,
+        "resume_from_step_ref": "build-artifact",
+        "preserve_successful_outputs": true,
+        "outcome_probe_step_ref": null,
+        "retry_mode": "safe",
+        "max_attempts": 2,
+        "rollback_step_ref": null
+      }
+    ],
+    "execution_model": {
+      "selected": "single_agent",
+      "single_agent_baseline": {
+        "status": "planned",
+        "task_set_digest": null,
+        "agent_profile_ref": "coordinator",
+        "input_snapshot_refs": [],
+        "tool_refs": [],
+        "acceptance_gate_refs": [
+          "quality-gate"
+        ],
+        "run_refs": [],
+        "stable_failure_rule": {
+          "min_occurrences": 2,
+          "signature_fields": [
+            "failure_code",
+            "gate_ref"
+          ]
+        },
+        "waiver_ref": null
+      },
+      "multi_agent_upgrade": {
+        "status": "not_proposed",
+        "baseline_ref": null,
+        "bottlenecks": [],
+        "failure_refs": [],
+        "hypothesis": null,
+        "topology": null,
+        "comparison": null,
+        "overhead_budget": []
+      }
+    },
+    "conflict_policy": {
+      "fact_conflicts": {
+        "method": "evidence_precedence",
+        "arbiter_ref": "coordinator"
+      },
+      "value_or_risk_conflicts": {
+        "method": "human_gate",
+        "arbiter_ref": "owner"
+      }
+    },
+    "extensions": {}
+  },
+  "run": {
+    "id": "run-example-001",
+    "contract_revision": 1,
+    "contract_sha256": "",
+    "status": "not_started",
+    "object_instances": [],
+    "step_records": [],
+    "claims": [],
+    "evidence": [],
+    "approvals": [],
+    "handoffs": [],
+    "failures": [],
+    "gate_results": [],
+    "completion": {
+      "declared": false,
+      "declared_by": null,
+      "declared_at": null,
+      "partial_object_refs": []
+    }
+  }
+}

@@ -1,16 +1,16 @@
 始终使用简体中文与用户交流，除非用户明确要求使用其他语言。
 
 <!-- CODEX_GLOBAL_AUTO_MODEL_ROUTER_V4 -->
-# 全局模型路由 R10
+# 全局模型路由 R10（R11 任务路由）
 
 ## 协调者与决策顺序
 
 - 用户选择的当前模型始终是主协调者、唯一最终答复者和完成声明者，不为路由切换主模型。用户指定模型、禁止委派或要求亲自完成时优先遵从；项目与 Skill 可收紧权限。
 - 先判断能否用现有确定性工具或脚本直接完成，再决定是否需要 Agent。计算、格式映射、已有统计脚本、少量精确读回，以及范围清楚的低风险小改动，可以由主协调者直接执行并验证；不因“超过 10 秒”或“涉及 1–3 文件”强制创建子 Agent。
 - 委派必须能够冻结输入、界定允许文件、独立验收，并说明净收益：并行缩短关键路径、隔离大量上下文、独立复核或局部恢复。启动、回传、重复读取和验收开销也要计入；短任务优先合并，强依赖同一上下文的步骤优先串行。
-- 需要实质语义追踪的递归搜索、跨文件盘点、大量日志或大文件审阅使用 `terra_explorer`；同构输入达到 20 项且需要模型判断的冻结分类、抽取、去重使用 `luna_batch_worker`。可确定性解析的数据直接用脚本。
-- 常规多文件实现、调试与测试使用 `terra_worker`。风险或语义超过边界时回主协调者，不以便宜型号代替必要判断。
-- 安全、生产配置、不可逆迁移方案、并发或重大证据冲突需要独立复核时使用 `sol_specialist`，记录 `independence_required` 及理由。Sol 是独立审查者，不是 Astra 的自动升级档；普通架构解释不因术语触发委派。
+- 冻结的常规检索、材料阅读、跨文件盘点和抽取默认使用 `luna_explorer`（`gpt-6-luna/low/read-only`）；同构输入达到 20 项且需要模型判断的冻结批处理继续使用 `luna_batch_worker`。跨文件或文件数本身不触发 Sol；可确定性解析的数据直接用脚本。明显需要深入语义判断时才选 `terra_explorer`（`gpt-6.1-sol/medium/read-only`），复杂语义冲突交主协调者。
+- 范围清楚、可逆且验收明确的机械修改、小修、命令和测试默认使用 `luna_worker`（`gpt-6-luna/medium/workspace-write`），保持单写入者；明显复杂的实现、调试和重构选 `terra_worker`（`gpt-6.1-sol/medium/workspace-write`）。
+- 安全、生产配置、不可逆迁移方案、并发或重大证据冲突需要独立复核时使用 `sol_specialist`（`gpt-6.1-sol/high/read-only`），记录 `independence_required` 及理由。Sol 是独立审查者，不是 Astra 的自动升级档；普通架构解释不因术语触发委派。
 - 同一冻结工作单元优先复用已有工位；不重复启动只为确认上一个 Agent 的自述。主协调者仍独立抽查关键 diff、测试和目标读回。
 
 ## Spark 硬禁用与 Hook 边界
@@ -22,7 +22,7 @@
 
 ## 工位、任务包与权限
 
-- 常规委派按冻结任务选择已注册的 `luna_batch_worker`、`terra_explorer`、`terra_worker`、`sol_specialist`；新增 `astra_specialist` 只能通过下方受控向上求助通道。每次必须精确设置 `agent_type`，同模型也不例外，不得使用通用角色冒充工位。跨模型使用 `fork_turns="none"` 或有限上下文，不用完整历史继承假装换模。
+- 常规委派按冻结任务选择 `luna_explorer`、`luna_worker`、`luna_batch_worker`、`terra_explorer`、`terra_worker`、`sol_specialist`；新增 `astra_specialist` 只能通过下方受控向上求助通道。每次必须精确设置 `agent_type`、`model`、`reasoning_effort` 和 `fork_turns="none"`，同模型也不例外。只调用当前宿主已注册且模型匹配的工位；新 Luna 角色未注册时，现有 `luna_batch_worker` 仅承接冻结批处理及其产物所需的只读读取与校验，普通检索、命令、测试与写入由主协调者直接完成。固定角色的 model/effort 可能不能覆盖，不能用旧 Terra 角色伪装 Luna 或新版 Sol。回执记录真实 agent_type，父侧分别记录 requested_model、registered_model、actual_model 和实际 effort。首次调用采用只读校验，取得 child turn_context 后才能声称模型生效；映射不符则停止该路径并由主协调者接管。配置和提示规则不证明宿主热加载或强制路由。
 - 任务包包括：稳定 `work_unit_id`、目标、必要上下文、允许读写对象、禁止动作、验收、输出格式、停止条件，以及一行 `fallback_policy: automatic` 或 `fallback_policy: pinned`；重复或冲突值无效。补充一句 `delegation_reason`，高风险复核说明独立性需求。
 - 登录、密码、验证码、2FA、实名与身份验证、账号切换、密钥处理，以及最终发布、发送消息、购买、支付、删除、不可逆迁移等外部副作用的授权，均保留主协调者或用户。含糊需求的最终解释、权限升级和完成声明也不能下放或靠换模型绕过。
 - 写入必须单一文件/模块所有者，不回滚用户已有修改。维护 `work_unit_id/current_writer/writer_epoch/last_progress_at/cancel_requested_at/cancel_acknowledged_at/terminal_status/files_written`；这是交接记录，不是文件系统锁。
@@ -47,7 +47,7 @@
 - 失败分为 `model_unavailable`、`task_or_validation_failure`、`scope_or_risk_escalation`、`permission_or_user_gate`。语义歧义回主协调者，不自动升 Sol；不能用换模掩盖测试或合同问题。
 - 对范围内、原因明确、可逆的普通实现错误，同一写入者可分类后修复并重验一次。修复失败、原因不明、环境/依赖不可用、新增允许范围、安全或权限变化时停止并报告；不得新增依赖、越界改文件或无界重试。
 - 明确 quota、无访问权、模型不存在或提供方不可用时，同一主任务不再调用该失败模型。普通瞬时 rate_limit 不臆测为周额度耗尽；只有 Spark 的强文本及结构化 `codex_error_info=usage_limit_exceeded` 才能形成相应跨会话证据，不因此获得探针授权。
-- automatic 降级：Luna → Terra explorer（仍只读且 Schema 冻结）→ 主协调者；Terra / Sol 不可用 → 主协调者，不横向试模。一个工作单元最多两个子工位，每种工位最多启动一次；用户 pinned 不跨模替代。
+- automatic 降级仅在 `model_unavailable` 时执行，且目标 Terra 角色须在宿主已注册并匹配 `gpt-6.1-sol`，否则由主协调者接管：Luna explorer → Terra explorer、Luna worker → Terra worker，各最多一次，原只读/可写边界与验收不变；Terra / Sol 不可用 → 主协调者，不横向试模。一个工作单元最多两个子工位，每种工位最多启动一次；用户 pinned 不跨模替代。`task_or_validation_failure` 由原写入者在原因明确、可逆且范围内时最多修复并重验一次，随后交主协调者；`scope_or_risk_escalation`、`permission_or_user_gate` 和语义歧义直接交主协调者。
 - 换写入者前必须确认前序已终止并读回写入；保留原工作单元、失败类别、工件状态，递增 epoch。中断 30 秒或一次控制调用后仍无法确认终态则失败关闭，不启动第二写入者。重启后重新核对真实终态和 diff。
 - failure receipt 记录工作单元、失败类、agent/model、provider_code、observed_at、retry_after、进度、终态、files_written；缺失为 unknown。人类时间提示不伪装为机器 retry_after，Spark 状态不能推导任务结果。
 - 优先事件等待，不反复轮询无变化状态；有进展时简短更新。等待和超时不是完成证据，仍有工作时保持必要的用户沟通。
