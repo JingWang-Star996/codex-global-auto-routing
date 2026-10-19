@@ -1,0 +1,10 @@
+{
+  "work_unit_id": "example-work-check-001",
+  "mode": "work",
+  "model": "GPT-6.1 Sol",
+  "goal": "在云端运行自包含代码，计算1至10000的质数个数和总和。不访问网络或用户已有资料。",
+  "context": "仅验证云端执行与结果回传。",
+  "acceptance": "返回实际代码及结果；没有执行工具就明确说明未运行。",
+  "authorization": "",
+  "source_refs": []
+}

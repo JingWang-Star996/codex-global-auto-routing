@@ -1,0 +1,8 @@
+{
+  "name": "codex-chatgpt-bridge",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "scripts": {"test": "node --test tests/*.test.mjs", "start": "node src/server.mjs --stdio"},
+  "engines": {"node": ">=22"}
+}

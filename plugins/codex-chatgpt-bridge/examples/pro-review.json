@@ -1,0 +1,10 @@
+{
+  "work_unit_id": "example-pro-review-001",
+  "mode": "chat",
+  "model": "GPT-6 Pro",
+  "goal": "独立复核下面的设计，提出两个可测试的反例。",
+  "context": "候选设计：只将有界任务交给云端，结果必须由本地主协调者验收。",
+  "acceptance": "区分事实、推断和建议，说明没有执行的验证。",
+  "authorization": "",
+  "source_refs": []
+}

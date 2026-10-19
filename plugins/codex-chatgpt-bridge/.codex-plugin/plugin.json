@@ -1,0 +1,14 @@
+{
+  "name": "codex-chatgpt-bridge",
+  "version": "0.1.1",
+  "description": "把有界任务交给 ChatGPT GPT-6 Pro 或 Work，保存完整结果并返回精简回执。",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "ChatGPT 云端外脑",
+    "shortDescription": "从 Codex 调用 Pro 思考和 Work 执行，自动收回结果",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": ["为当前任务选择一个有价值的云端独立复核，交给 ChatGPT Pro 并收回结果。"]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "local-chatgpt-bridge",
+  "interface": {"displayName": "本地云端协作插件"},
+  "plugins": [{
+    "name": "codex-chatgpt-bridge",
+    "source": {"source": "local", "path": "./"},
+    "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
+    "category": "Productivity"
+  }]
+}

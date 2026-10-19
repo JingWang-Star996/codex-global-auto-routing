@@ -1,0 +1,22 @@
+name: ChatGPT bridge offline tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  bridge:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: plugins/codex-chatgpt-bridge
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Offline state, browser logic and packaging tests
+        run: npm test

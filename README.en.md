@@ -6,6 +6,12 @@
 
 An experimental, project-independent configuration package for Codex Desktop / CLI on Windows. It keeps the model selected by the user as the primary coordinator and lets that coordinator choose bounded sub-agent roles according to task shape, risk, and delegation value. It is neither a transparent main-model switch nor a host-level permission system.
 
+## Optional extension: ChatGPT cloud collaboration
+
+The separate [codex-chatgpt-bridge 0.1.1 plugin](plugins/codex-chatgpt-bridge/README.en.md) lets the coordinator send bounded reviews to web GPT-6 Pro or cloud execution to ChatGPT Work, store full responses locally, and retrieve compact receipts. Routine local roles retain the R11 split.
+
+It adds seven MCP tools, durable idempotent jobs and read-only reconciliation. Run its local installer first; the public package excludes machine paths and private runtime evidence. UI labels and quota are not proof of backend identity. This optional tool layer does not change the Spark ban, Astra child-role eligibility, or claim host-enforced routing.
+
 ## What it routes
 
 | Work type | Role and default model |

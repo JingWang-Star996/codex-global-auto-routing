@@ -1,0 +1,6 @@
+interface:
+  display_name: "ChatGPT 云端外脑"
+  short_description: "自动将有界任务交给 Pro 思考或 Work 执行，取回结果交主模型验收"
+  default_prompt: "使用 $cloud-collaboration 为当前任务安排一次有价值的云端协作并收回结果。"
+policy:
+  allow_implicit_invocation: true
