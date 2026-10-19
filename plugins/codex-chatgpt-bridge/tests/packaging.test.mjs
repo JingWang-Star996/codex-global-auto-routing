@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,mkdir,copyFile,writeFile,readFile,rm} from 'node:fs/promises';
+import {mkdtemp,mkdir,copyFile,writeFile,readFile,realpath,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
-import {join,resolve} from 'node:path';
+import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 
@@ -15,7 +15,8 @@ test('installer prepares the actual checkout path without calling Codex',{skip:p
   const result=spawnSync('pwsh',['-NoProfile','-File',join(root,'scripts/install.ps1'),'-PrepareOnly'],{encoding:'utf8',timeout:20000});
   assert.equal(result.status,0,result.stderr);
   const config=JSON.parse(await readFile(join(root,'.mcp.json'),'utf8'));
-  assert.equal(resolve(config.mcpServers.chatgpt_bridge.args[0]),join(root,'src/server.mjs'));
+  // Windows runners may expose TEMP through an 8.3 alias; compare file targets.
+  assert.equal(await realpath(config.mcpServers.chatgpt_bridge.args[0]),await realpath(join(root,'src/server.mjs')));
   assert.deepEqual(config.mcpServers.chatgpt_bridge.args.slice(1),['--stdio']);
   assert.match(result.stdout,/no Codex configuration or browser changed/);
 });
