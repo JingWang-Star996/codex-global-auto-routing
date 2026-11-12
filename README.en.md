@@ -14,6 +14,8 @@ It adds seven MCP tools, durable idempotent jobs and read-only reconciliation. R
 
 ## What it routes
 
+The coordinator handles tasks directly by default. Keep one author on a meeting summary, a continuous investigation, or successive revisions. Independent branches can run in parallel. For a second review, identify the fact or conclusion that needs checking. The automatic arm kept a single author on four real tasks, with two additional runs testing explicit delegation. [Compare quality, time, and tokens](docs/routing-benchmark-2026-11.md)
+
 | Work type | Role and default model |
 | --- | --- |
 | Parseable calculations, field comparisons, and exact readback | Deterministic tools first |

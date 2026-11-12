@@ -2,6 +2,11 @@
 
 [中文](CHANGELOG.md) | [English](CHANGELOG.en.md)
 
+## Delegation by verification need · 2026-11-12
+
+- Keep continuous work with the coordinator. After choosing to delegate, distinguish source-checkable facts from conclusions that require interpretation in context.
+- Publish anonymized results for four paired runs and two additional runs with an explicitly assigned reader. [Benchmark results](docs/routing-benchmark-2026-11.md)
+
 ## R11 task routing and Skill · 2026-10-13
 
 - Default routine reading and reversible execution to GPT-6 Luna; use GPT-6.1 Sol for complex analysis/implementation and expert review. Add two Luna roles and English mirrors.

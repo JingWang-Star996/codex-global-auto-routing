@@ -1,6 +1,14 @@
 # R11 model routing and acceptance
 
-R11 keeps the user-selected coordinator. Routine reading and reversible execution use low-cost roles; complex analysis and implementation use Sol roles. Use scripts for parseable tasks; cross-file scope or file count alone does not trigger escalation.
+The coordinator completes work directly by default and uses scripts for fixed calculations and field comparisons. Keep one author on material that depends on continuity, such as a proposal that becomes a decision and is revised at the end of the same meeting.
+
+After deciding to delegate, choose the role by how the result will be checked.
+
+- Luna can locate quotations, reconcile fields, or independently recalculate a stated metric from the source. If competing definitions would affect the conclusion, return the evidence for both to the author.
+- To check whether a draft presents a discussion as settled, the author traces proposals, decisions, revisions, and open questions in sequence. Ask `terra_explorer` for a second reading of a specific point when needed. Use `sol_specialist` for major evidence conflicts or high-risk independent review.
+- Branches with independent inputs can run in parallel. Review a specific claim in a draft once that draft exists. Use `delegation_reason` to say what the separate assignment will resolve.
+
+The automatic arm kept one author on all four real tasks. Two further runs assigned a second reader explicitly. See the [anonymized quality, time, and token comparison](routing-benchmark-2026-11.md).
 
 | Role | Model / effort | Configured sandbox |
 | --- | --- | --- |
